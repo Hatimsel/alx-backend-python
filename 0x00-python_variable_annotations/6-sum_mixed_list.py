@@ -4,7 +4,7 @@ from functools import reduce
 from typing import List, Union
 
 
-def sum_mixed_list(mxd_list: List[Union[float, int]]) -> float:
+def sum_mixed_list(mxd_list: List[Union[int, float]]) -> float:
     """Takes a mixed list
     Returns their sum"""
     return reduce(lambda x, y: x + y, mxd_list)
