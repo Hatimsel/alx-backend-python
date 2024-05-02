@@ -3,4 +3,6 @@
 
 
 def add(a: float, b: float) -> float:
-    return a + b;
+    """Takes two float numbers
+    returns a float"""
+    return a + b
