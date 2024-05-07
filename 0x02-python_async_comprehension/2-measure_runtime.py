@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ru time for four parallel comprehensions"""
+"""Run time for four parallel comprehensions"""
 import asyncio
 from time import perf_counter
 
@@ -14,5 +14,5 @@ async def measure_runtime() -> float:
     start = perf_counter()
     await asyncio.gather(*tasks)
     end = perf_counter()
-    elapsed = start - end
+    elapsed = end - start
     return elapsed
