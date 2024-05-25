@@ -56,10 +56,10 @@ class TestGithubOrgClient(unittest.TestCase):
             mocked_preperty.assert_called_once()
 
     @parameterized.expand([
-        ({"key": "my_license"}, "my_license", False),
-        ({"key": "other_license"}, "my_license", False)
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
     ])
-    def test_has_license(self, mapping, sequence, expected_result):
+    def test_has_license(self, mapping, value, expected_result):
         """Testing GithubOrgClient.has_license"""
-        self.assertEqual(GithubOrgClient.has_license(mapping, sequence),
+        self.assertEqual(GithubOrgClient.has_license(mapping, value),
                          expected_result)
