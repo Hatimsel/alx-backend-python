@@ -38,3 +38,19 @@ class TestGithubOrgClient(unittest.TestCase):
 
             self.assertEqual(instance._public_repos_url,
                              mocked_property.return_value['repos_url'])
+
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get):
+        """Testing GithubOrgClient.public_repos"""
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=mock.PropertyMock) as mocked_preperty:
+            mocked_preperty.return_value = 'https://api.github.com/orgs\
+                                            /netflix/repos'
+
+            instance = GithubOrgClient('netflix')
+            mock_get.return_value = instance.org
+            public_repos = instance._public_repos_url
+
+            self.assertEqual(mocked_preperty.return_value, public_repos)
+            mock_get.assert_called_once()
+            mocked_preperty.assert_called_once()
