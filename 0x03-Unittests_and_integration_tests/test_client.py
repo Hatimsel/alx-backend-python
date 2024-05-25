@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Testing client.GithubOrgClient class"""
 from client import GithubOrgClient
 import unittest
@@ -20,6 +20,6 @@ class TestGithubOrgClient(unittest.TestCase):
         ORG_URL = f"https://api.github.com/orgs/{org_name}"
 
         instance = GithubOrgClient(org_name)
-        _ = instance.org
+        instance.org
 
         mock_get.assert_called_once_with(ORG_URL)
