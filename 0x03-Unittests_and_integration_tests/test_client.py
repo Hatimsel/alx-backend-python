@@ -62,8 +62,8 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     def test_has_license(self, mapping, value, expected_result):
         """Testing GithubOrgClient.has_license"""
-        self.assertEqual(GithubOrgClient.has_license(mapping, value),
-                         expected_result)
+        result = GithubOrgClient.has_license(mapping, value)
+        self.assertEqual(result, expected_result)
 
 
 @parameterized_class(['org_payload', 'repos_payload',
