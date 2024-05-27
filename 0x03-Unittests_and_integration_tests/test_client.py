@@ -68,15 +68,14 @@ class TestGithubOrgClient(unittest.TestCase):
 
 @parameterized_class(['org_payload', 'repos_payload',
                       'expected_repos', 'apache2_repos'],
-                      TEST_PAYLOAD)
+                     TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Testing GithubOrgClient.public_repos"""
     @classmethod
     def setUpClass(cls):
         """Setting up our testclass"""
-
         config = {
-            'return_value.json.side_effect':[
+            'return_value.json.side_effect': [
                 cls.org_payload, cls.repos_payload,
                 cls.org_payload, cls.repos_payload
             ]
