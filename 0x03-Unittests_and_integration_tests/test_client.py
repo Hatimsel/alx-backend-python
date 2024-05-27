@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Testing client.GithubOrgClient class"""
-import requests
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
 from parameterized import parameterized
@@ -67,73 +66,43 @@ class TestGithubOrgClient(unittest.TestCase):
                          expected_result)
 
 
-@parameterized_class(('org_payload', 'repos_payload',
-                      'expected_repos', 'apache2_repos'), [
-                          (TEST_PAYLOAD[0][0], TEST_PAYLOAD[0][1],
-                           TEST_PAYLOAD[0][2], TEST_PAYLOAD[0][3])
-                      ])
+@parameterized_class(['org_payload', 'repos_payload',
+                      'expected_repos', 'apache2_repos'],
+                      TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Testing GithubOrgClient.public_repos"""
     @classmethod
     def setUpClass(cls):
-        cls.get_patcher = patch('utils.requests.get')
-        mocked_get = cls.get_patcher.start()
+        """Setting up our testclass"""
 
-        # def side_effect(url):
-        #     if url == 'url_for_org_payload':
-        #         return cls.org_payload
-        #     elif url == 'url_for_repos_payload':
-        #         return cls.repos_payload
-        #     elif url == 'url_for_expected_repos':
-        #         return cls.expected_repos
-        #     elif url == 'url_for_apache2_repos':
-        #         return cls.apache2_repos
-        #     else:
-        #         raise ValueError(f'Unexpected URL: {url}')
+        config = {
+            'return_value.json.side_effect':[
+                cls.org_payload, cls.repos_payload,
+                cls.org_payload, cls.repos_payload
+            ]
+        }
 
-        # mocked_get.side_effect = side_effect
-        response_mock = MagicMock()
-
-        response_mock.json.side_effect = [
-            (cls.org_payload, cls.repos_payload,
-             cls.expected_payload, cls.apache2_repos)
-             ]
-
-        mocked_get.return_value = response_mock
-
-        instance = GithubOrgClient('google')
-        result = instance.public_repos()
-
-        cls.assertEqual(result, mocked_get.return_value)
+        cls.get_patcher = patch('requests.get', **config)
+        cls.mocked_get = cls.get_patcher.start()
 
     @classmethod
     def tearDownClass(cls):
         cls.get_patcher.stop()
 
-    # def test_public_repos_with_org_payload(self):
-    #     """Testing public_repos with org payload"""
-    #     instance = GithubOrgClient('google')
-    #     result = instance.public_repos()
+    def test_public_repos(self):
+        """Testing public_repos"""
+        instance = GithubOrgClient('google')
+        org_result = instance.org
+        public_result = instance.public_repos()
 
-    #     self.assertEqual(result, self.org_payload)
+        self.assertEqual(org_result, self.org_payload)
+        self.assertEqual(public_result, self.expected_repos)
+        self.mocked_get.assert_called()
 
-    # def test_public_repos_with_repos_payload(self):
-    #     """Testing public_repos with repos payload"""
-    #     instance = GithubOrgClient('google')
-    #     result = instance.public_repos()
+    def test_public_repos_with_license(self, license="apache-2.0"):
+        """Testing public_repos with license"""
+        instance = GithubOrgClient('google')
+        result = instance.public_repos(license=license)
 
-    #     self.assertEqual(result, self.repos_payload)
-
-    # def test_public_repos_with_expected_repos(self):
-    #     """Testing public_repos with expected_repos"""
-    #     instance = GithubOrgClient('google')
-    #     result = instance.public_repos()
-
-    #     self.assertEqual(result, self.expected_repos)
-
-    # def test_public_repos_with_apache2_repos(self):
-    #     """Testing public_repos with apache2_repos"""
-    #     instance = GithubOrgClient('google')
-    #     result = instance.public_repos()
-
-    #     self.assertEqual(result, self.apache2_repos)
+        self.assertEqual(result, self.apache2_repos)
+        self.mocked_get.assert_called()
