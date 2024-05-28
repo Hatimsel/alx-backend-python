@@ -54,10 +54,12 @@ class TestClass:
     """a class for testing"""
 
     def a_method(self):
+        """a_method for testing"""
         return 42
 
     @memoize
     def a_property(self):
+        """a method that returns another one"""
         return self.a_method()
 
 
