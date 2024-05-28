@@ -86,6 +86,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Stopping the patcher"""
         cls.get_patcher.stop()
 
     def test_public_repos(self):
